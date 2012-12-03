@@ -1,3 +1,9 @@
+This repository has been forked from the kernel.org repository at:
+git://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
+
+
+--------------------
+
 This is a set of utilities for Linux networking.
 
 Information:
