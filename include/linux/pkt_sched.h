@@ -650,9 +650,37 @@ enum {
 
 #define TCA_QFQ_MAX	(__TCA_QFQ_MAX - 1)
 
+enum {
+	TCA_QFQ_XSTATS_UNSPEC,
+	TCA_QFQ_XSTATS_QDISC,
+	TCA_QFQ_XSTATS_CLASS,
+};
+
 struct tc_qfq_stats {
 	__u32 weight;
 	__u32 lmax;
+};
+
+struct tc_qfq_qd_stats {
+	__u64 v_forwarded; /* Indicates V was forwarded to match S of some group
+			    * in order to avoid a non work conserving schedule
+			    */
+	__u64 idle_on_deq; /* Indicates that the queue is idle after a
+			    * dequeue operation
+			    */
+	__u64 update_grp_on_deq; /* Group required update after dequeueing */
+};
+
+struct tc_qfq_cl_stats {
+	__u32 dummy; /* Just a dummy variable. No stats available currently */
+};
+
+struct tc_qfq_xstats {
+	__u32 type;
+	union {
+		struct tc_qfq_qd_stats qdisc_stats;
+		struct tc_qfq_cl_stats class_stats;
+	};
 };
 
 /* CODEL */

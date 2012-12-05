@@ -113,10 +113,35 @@ static int qfq_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
 	return 0;
 }
 
+static int qfq_print_xstats(struct qdisc_util *qu, FILE *f,
+			    struct rtattr *xstats)
+{
+	struct tc_qfq_xstats *st;
+
+	if (xstats == NULL)
+		return 0;
+
+	if (RTA_PAYLOAD(xstats) < sizeof(*st))
+		return -1;
+
+	st = RTA_DATA(xstats);
+	if (st->type == TCA_QFQ_XSTATS_QDISC) {
+		fprintf(f, " v_forwarded %llu idle_on_deq %llu update_grp_on_deq %llu",
+			st->qdisc_stats.v_forwarded,
+			st->qdisc_stats.idle_on_deq,
+			st->qdisc_stats.update_grp_on_deq);
+	} else if (st->type == TCA_QFQ_XSTATS_CLASS) {
+	} else {
+		fprintf(f, " UNKNOWN xstat type");
+	}
+	return 0;
+}
+
 struct qdisc_util qfq_qdisc_util = {
 	.id		= "qfq",
 	.parse_qopt	= qfq_parse_opt,
 	.print_qopt	= qfq_print_opt,
 	.parse_copt	= qfq_parse_class_opt,
 	.print_copt	= qfq_print_opt,
+	.print_xstats 	= qfq_print_xstats,
 };
