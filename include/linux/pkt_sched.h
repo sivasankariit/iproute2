@@ -665,14 +665,21 @@ struct tc_qfq_qd_stats {
 	__u64 v_forwarded; /* Indicates V was forwarded to match S of some group
 			    * in order to avoid a non work conserving schedule
 			    */
-	__u64 idle_on_deq; /* Indicates that the queue is idle after a
+	__u64 idle_on_deq; /* Indicates that the qdisc is idle after a
 			    * dequeue operation
 			    */
 	__u64 update_grp_on_deq; /* Group required update after dequeueing */
+	__u64 txq_blocked; /* Interface frozen or stopped while trying to
+	                    * transmit skb. For each skb dequeued from qdisc,
+			    * we increment this value at most once (not for
+			    * each time we retry).
+			    */
 };
 
 struct tc_qfq_cl_stats {
-	__u32 dummy; /* Just a dummy variable. No stats available currently */
+	__u64 idle_on_deq; /* Indicates that the class is idle after a
+			    * dequeue from the class
+			    */
 };
 
 struct tc_qfq_xstats {
