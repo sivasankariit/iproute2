@@ -670,10 +670,11 @@ struct tc_qfq_qd_stats {
 			    */
 	__u64 update_grp_on_deq; /* Group required update after dequeueing */
 	__u64 txq_blocked; /* Interface frozen or stopped while trying to
-	                    * transmit skb. For each skb dequeued from qdisc,
+			    * transmit skb. For each skb dequeued from qdisc,
 			    * we increment this value at most once (not for
 			    * each time we retry).
 			    */
+	__u32 wsum_active; /* Sum of weights of currently active classes */
 };
 
 struct tc_qfq_cl_stats {
