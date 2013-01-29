@@ -681,6 +681,7 @@ struct tc_qfq_cl_stats {
 	__u64 idle_on_deq; /* Indicates that the class is idle after a
 			    * dequeue from the class
 			    */
+	__s64 inter_deq_time_ns ; /* Mean inter-dequeue time */
 };
 
 struct tc_qfq_xstats {
