@@ -133,7 +133,7 @@ static int qfq_print_xstats(struct qdisc_util *qu, FILE *f,
 		fprintf(f, "\n txq_blocked %llu wsum_active %lu",
 			st->qdisc_stats.txq_blocked, st->qdisc_stats.wsum_active);
 	} else if (st->type == TCA_QFQ_XSTATS_CLASS) {
-		fprintf(f, " idle_on_deq %llu inter_deq_time_ns %ll",
+		fprintf(f, " idle_on_deq %llu inter_deq_time_ns %lld",
 			st->class_stats.idle_on_deq,
 			st->class_stats.inter_deq_time_ns);
 	} else {
