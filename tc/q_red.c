@@ -39,7 +39,7 @@ static int red_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nl
 	unsigned burst = 0;
 	unsigned avpkt = 0;
 	double probability = 0.02;
-	unsigned rate = 0;
+	__u64 rate = 0;
 	int wlog;
 	__u8 sbuf[256];
 	__u32 max_P;

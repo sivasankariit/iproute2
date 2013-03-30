@@ -143,7 +143,7 @@ static const struct rate_suffix {
 };
 
 
-int get_rate(unsigned *rate, const char *str)
+int get_rate(__u64 *rate, const char *str)
 {
 	char *p;
 	double bps = strtod(str, &p);
@@ -167,7 +167,7 @@ int get_rate(unsigned *rate, const char *str)
 	return -1;
 }
 
-void print_rate(char *buf, int len, __u32 rate)
+void print_rate(char *buf, int len, __u64 rate)
 {
 	double tmp = (double)rate*8;
 	extern int use_iec;
@@ -189,7 +189,7 @@ void print_rate(char *buf, int len, __u32 rate)
 	}
 }
 
-char * sprint_rate(__u32 rate, char *buf)
+char * sprint_rate(__u64 rate, char *buf)
 {
 	print_rate(buf, SPRINT_BSIZE-1, rate);
 	return buf;

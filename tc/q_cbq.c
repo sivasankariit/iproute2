@@ -190,7 +190,7 @@ static int cbq_parse_class_opt(struct qdisc_util *qu, int argc, char **argv, str
 	unsigned mpu=0;
 	int cell_log=-1;
 	int ewma_log=-1;
-	unsigned bndw = 0;
+	__u64 bndw = 0;
 	unsigned minburst=0, maxburst=0;
 	unsigned short overhead=0;
 	unsigned int linklayer = LINKLAYER_ETHERNET; /* Assume ethernet */

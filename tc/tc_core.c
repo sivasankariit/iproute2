@@ -56,12 +56,12 @@ unsigned tc_core_ktime2time(unsigned ktime)
 	return ktime / clock_factor;
 }
 
-unsigned tc_calc_xmittime(unsigned rate, unsigned size)
+unsigned tc_calc_xmittime(__u64 rate, unsigned size)
 {
 	return tc_core_time2tick(TIME_UNITS_PER_SEC*((double)size/rate));
 }
 
-unsigned tc_calc_xmitsize(unsigned rate, unsigned ticks)
+unsigned tc_calc_xmitsize(__u64 rate, unsigned ticks)
 {
 	return ((double)rate*tc_core_tick2time(ticks))/TIME_UNITS_PER_SEC;
 }
@@ -112,7 +112,7 @@ int tc_calc_rtable(struct tc_ratespec *r, __u32 *rtab,
 {
 	int i;
 	unsigned sz;
-	unsigned bps = r->rate;
+	__u64 bps = r->rate;
 	unsigned mpu = r->mpu;
 
 	if (mtu == 0)

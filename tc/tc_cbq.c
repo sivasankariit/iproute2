@@ -24,7 +24,7 @@
 #include "tc_core.h"
 #include "tc_cbq.h"
 
-unsigned tc_cbq_calc_maxidle(unsigned bndw, unsigned rate, unsigned avpkt,
+unsigned tc_cbq_calc_maxidle(__u64 bndw, __u64 rate, unsigned avpkt,
 			     int ewma_log, unsigned maxburst)
 {
 	double maxidle;
@@ -41,7 +41,7 @@ unsigned tc_cbq_calc_maxidle(unsigned bndw, unsigned rate, unsigned avpkt,
 	return tc_core_time2tick(maxidle*(1<<ewma_log)*TIME_UNITS_PER_SEC);
 }
 
-unsigned tc_cbq_calc_offtime(unsigned bndw, unsigned rate, unsigned avpkt,
+unsigned tc_cbq_calc_offtime(__u64 bndw, __u64 rate, unsigned avpkt,
 			     int ewma_log, unsigned minburst)
 {
 	double g = 1.0 - 1.0/(1<<ewma_log);

@@ -294,7 +294,8 @@ hfsc_get_sc1(int *argcp, char ***argvp, struct tc_service_curve *sc)
 {
 	char **argv = *argvp;
 	int argc = *argcp;
-	unsigned int m1 = 0, d = 0, m2 = 0;
+	unsigned int d = 0;
+	__u64 m1 = 0, m2 = 0;
 
 	if (matches(*argv, "m1") == 0) {
 		NEXT_ARG();
@@ -337,7 +338,8 @@ hfsc_get_sc2(int *argcp, char ***argvp, struct tc_service_curve *sc)
 {
 	char **argv = *argvp;
 	int argc = *argcp;
-	unsigned int umax = 0, dmax = 0, rate = 0;
+	unsigned int umax = 0, dmax = 0;
+	__u64 rate = 0;
 
 	if (matches(*argv, "umax") == 0) {
 		NEXT_ARG();

@@ -35,7 +35,7 @@ struct tc_stats {
 	__u32	drops;			/* Packets dropped because of lack of resources */
 	__u32	overlimits;		/* Number of throttle events when this
 					 * flow goes out of allocated bandwidth */
-	__u32	bps;			/* Current flow byte rate */
+	__u64	bps;			/* Current flow byte rate */
 	__u32	pps;			/* Current flow packet rate */
 	__u32	qlen;
 	__u32	backlog;
@@ -79,7 +79,7 @@ struct tc_ratespec {
 	unsigned short	overhead;
 	short		cell_align;
 	unsigned short	mpu;
-	__u32		rate;
+	__u64		rate;
 };
 
 #define TC_RTAB_SIZE	1024
@@ -368,9 +368,9 @@ struct tc_hfsc_qopt {
 };
 
 struct tc_service_curve {
-	__u32	m1;		/* slope of the first segment in bps */
+	__u64	m1;		/* slope of the first segment in bps */
 	__u32	d;		/* x-projection of the first segment in us */
-	__u32	m2;		/* slope of the second segment in bps */
+	__u64	m2;		/* slope of the second segment in bps */
 };
 
 struct tc_hfsc_stats {
@@ -541,7 +541,7 @@ struct tc_netem_corrupt {
 };
 
 struct tc_netem_rate {
-	__u32	rate;	/* byte/s */
+	__u64	rate;	/* byte/s */
 	__s32	packet_overhead;
 	__u32	cell_size;
 	__s32	cell_overhead;

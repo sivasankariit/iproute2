@@ -72,7 +72,7 @@ int tc_red_eval_ewma(unsigned qmin, unsigned burst, unsigned avpkt)
    Stab[t>>Scell_log] = -log(1-W) * t/xmit_time
  */
 
-int tc_red_eval_idle_damping(int Wlog, unsigned avpkt, unsigned bps, __u8 *sbuf)
+int tc_red_eval_idle_damping(int Wlog, unsigned avpkt, __u64 bps, __u8 *sbuf)
 {
 	double xmit_time = tc_calc_xmittime(bps, avpkt);
 	double lW = -log(1.0 - 1.0/(1<<Wlog))/xmit_time;

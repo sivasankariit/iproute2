@@ -33,7 +33,7 @@ struct gnet_stats_basic_packed {
  * @pps: current packet rate
  */
 struct gnet_stats_rate_est {
-	__u32	bps;
+	__u64	bps;
 	__u32	pps;
 };
 

@@ -131,7 +131,7 @@ int act_parse_police(struct action_util *a,int *argc_p, char ***argv_p, int tca_
 	struct tc_police p;
 	__u32 rtab[256];
 	__u32 ptab[256];
-	__u32 avrate = 0;
+	__u64 avrate = 0;
 	int presult = 0;
 	unsigned buffer=0, mtu=0, mpu=0;
 	unsigned short overhead=0;
@@ -301,7 +301,7 @@ int act_parse_police(struct action_util *a,int *argc_p, char ***argv_p, int tca_
 	if (p.peakrate.rate)
                 addattr_l(n, MAX_MSG, TCA_POLICE_PEAKRATE, ptab, 1024);
 	if (avrate)
-		addattr32(n, MAX_MSG, TCA_POLICE_AVRATE, avrate);
+		addattr64(n, MAX_MSG, TCA_POLICE_AVRATE, avrate);
 	if (presult)
 		addattr32(n, MAX_MSG, TCA_POLICE_RESULT, presult);
 
@@ -353,7 +353,7 @@ print_police(struct action_util *a, FILE *f, struct rtattr *arg)
 	if (p->peakrate.rate)
 		fprintf(f, "peakrate %s ", sprint_rate(p->peakrate.rate, b1));
 	if (tb[TCA_POLICE_AVRATE])
-		fprintf(f, "avrate %s ", sprint_rate(rta_getattr_u32(tb[TCA_POLICE_AVRATE]), b1));
+		fprintf(f, "avrate %s ", sprint_rate(rta_getattr_u64(tb[TCA_POLICE_AVRATE]), b1));
 	fprintf(f, "action %s", police_action_n2a(p->action, b1, sizeof(b1)));
 	if (tb[TCA_POLICE_RESULT]) {
 		fprintf(f, "/%s ", police_action_n2a(*(int*)RTA_DATA(tb[TCA_POLICE_RESULT]), b1, sizeof(b1)));
