@@ -1,7 +1,12 @@
 This repository has been forked from the kernel.org repository at:
 git://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
 
+Compiling on Debian with 3.6.6 kernel:
+sudo apt-get install libdb4o-cil-dev libdb-dev bison flex
+make
 
+
+README from original iproute2 repository follows:
 --------------------
 
 This is a set of utilities for Linux networking.
