@@ -48,6 +48,7 @@ static void usage(void)
 "                   netns | l2tp | tcp_metrics }\n"
 "       OPTIONS := { -V[ersion] | -s[tatistics] | -d[etails] | -r[esolve] |\n"
 "                    -f[amily] { inet | inet6 | ipx | dnet | bridge | link } |\n"
+"                    -4 | -6 | -I | -D | -B | -0 |\n"
 "                    -l[oops] { maximum-addr-flush-attempts } |\n"
 "                    -o[neline] | -t[imestamp] | -b[atch] [filename] |\n"
 "                    -rc[vbuf] [size]}\n");
@@ -57,6 +58,7 @@ static void usage(void)
 static int do_help(int argc, char **argv)
 {
 	usage();
+        return 0;
 }
 
 static const struct cmd {
@@ -85,6 +87,7 @@ static const struct cmd {
 	{ "mroute",	do_multiroute },
 	{ "mrule",	do_multirule },
 	{ "netns",	do_netns },
+	{ "netconf",	do_ipnetconf },
 	{ "help",	do_help },
 	{ 0 }
 };

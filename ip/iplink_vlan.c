@@ -26,16 +26,16 @@ static void explain(void)
 		"\n"
 		"VLANID := 0-4095\n"
 		"FLAG-LIST := [ FLAG-LIST ] FLAG\n"
-		"FLAG := [ reorder_hdr { on | off } ] [ gvrp { on | off } ]\n"
+		"FLAG := [ reorder_hdr { on | off } ] [ gvrp { on | off } ] [ mvrp { on | off } ]\n"
 		"        [ loose_binding { on | off } ]\n"
 		"QOS-MAP := [ QOS-MAP ] QOS-MAPPING\n"
 		"QOS-MAPPING := FROM:TO\n"
 	);
 }
 
-static int on_off(char *msg)
+static int on_off(const char *msg, const char *arg)
 {
-	fprintf(stderr, "Error: argument of \"%s\" must be \"on\" or \"off\"\n", msg);
+	fprintf(stderr, "Error: argument of \"%s\" must be \"on\" or \"off\", not \"%s\"\n", msg, arg);
 	return -1;
 }
 
@@ -93,7 +93,7 @@ static int vlan_parse_opt(struct link_util *lu, int argc, char **argv,
 			else if (strcmp(*argv, "off") == 0)
 				flags.flags &= ~VLAN_FLAG_REORDER_HDR;
 			else
-				return on_off("reorder_hdr");
+				return on_off("reorder_hdr", *argv);
 		} else if (matches(*argv, "gvrp") == 0) {
 			NEXT_ARG();
 			flags.mask |= VLAN_FLAG_GVRP;
@@ -102,7 +102,16 @@ static int vlan_parse_opt(struct link_util *lu, int argc, char **argv,
 			else if (strcmp(*argv, "off") == 0)
 				flags.flags &= ~VLAN_FLAG_GVRP;
 			else
-				return on_off("gvrp");
+				return on_off("gvrp", *argv);
+		} else if (matches(*argv, "mvrp") == 0) {
+			NEXT_ARG();
+			flags.mask |= VLAN_FLAG_MVRP;
+			if (strcmp(*argv, "on") == 0)
+				flags.flags |= VLAN_FLAG_MVRP;
+			else if (strcmp(*argv, "off") == 0)
+				flags.flags &= ~VLAN_FLAG_MVRP;
+			else
+				return on_off("mvrp", *argv);
 		} else if (matches(*argv, "loose_binding") == 0) {
 			NEXT_ARG();
 			flags.mask |= VLAN_FLAG_LOOSE_BINDING;
@@ -111,7 +120,7 @@ static int vlan_parse_opt(struct link_util *lu, int argc, char **argv,
 			else if (strcmp(*argv, "off") == 0)
 				flags.flags &= ~VLAN_FLAG_LOOSE_BINDING;
 			else
-				return on_off("loose_binding");
+				return on_off("loose_binding", *argv);
 		} else if (matches(*argv, "ingress-qos-map") == 0) {
 			NEXT_ARG();
 			if (vlan_parse_qos_map(&argc, &argv, n,
@@ -128,7 +137,7 @@ static int vlan_parse_opt(struct link_util *lu, int argc, char **argv,
 			explain();
 			return -1;
 		} else {
-			fprintf(stderr, "vlan: what is \"%s\"?\n", *argv);
+			fprintf(stderr, "vlan: unknown command \"%s\"?\n", *argv);
 			explain();
 			return -1;
 		}
@@ -166,6 +175,7 @@ static void vlan_print_flags(FILE *fp, __u32 flags)
 		}
 	_PF(REORDER_HDR);
 	_PF(GVRP);
+	_PF(MVRP);
 	_PF(LOOSE_BINDING);
 #undef _PF
 	if (flags)

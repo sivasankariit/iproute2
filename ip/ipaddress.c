@@ -19,7 +19,7 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
@@ -71,7 +71,7 @@ static void usage(void)
 	fprintf(stderr, "                                                      [ CONFFLAG-LIST ]\n");
 	fprintf(stderr, "       ip addr del IFADDR dev STRING\n");
 	fprintf(stderr, "       ip addr {show|save|flush} [ dev STRING ] [ scope SCOPE-ID ]\n");
-	fprintf(stderr, "                            [ to PREFIX ] [ FLAG-LIST ] [ label PATTERN ]\n");
+	fprintf(stderr, "                            [ to PREFIX ] [ FLAG-LIST ] [ label PATTERN ] [up]\n");
 	fprintf(stderr, "       ip addr {showdump|restore}\n");
 	fprintf(stderr, "IFADDR := PREFIX | ADDR peer PREFIX\n");
 	fprintf(stderr, "          [ broadcast ADDR ] [ anycast ADDR ]\n");
@@ -89,15 +89,15 @@ static void usage(void)
 	exit(-1);
 }
 
-void print_link_flags(FILE *fp, unsigned flags, unsigned mdown)
+static void print_link_flags(FILE *fp, unsigned flags, unsigned mdown)
 {
 	fprintf(fp, "<");
 	if (flags & IFF_UP && !(flags & IFF_RUNNING))
 		fprintf(fp, "NO-CARRIER%s", flags ? "," : "");
 	flags &= ~IFF_RUNNING;
 #define _PF(f) if (flags&IFF_##f) { \
-                  flags &= ~IFF_##f ; \
-                  fprintf(fp, #f "%s", flags ? "," : ""); }
+		  flags &= ~IFF_##f ; \
+		  fprintf(fp, #f "%s", flags ? "," : ""); }
 	_PF(LOOPBACK);
 	_PF(BROADCAST);
 	_PF(POINTOPOINT);
@@ -117,7 +117,7 @@ void print_link_flags(FILE *fp, unsigned flags, unsigned mdown)
 	_PF(DORMANT);
 	_PF(ECHO);
 #undef _PF
-        if (flags)
+	if (flags)
 		fprintf(fp, "%x", flags);
 	if (mdown)
 		fprintf(fp, ",M-DOWN");
@@ -163,7 +163,7 @@ static void print_queuelen(FILE *f, struct rtattr *tb[IFLA_MAX + 1])
 		memset(&ifr, 0, sizeof(ifr));
 		strcpy(ifr.ifr_name, rta_getattr_str(tb[IFLA_IFNAME]));
 		if (ioctl(s, SIOCGIFTXQLEN, &ifr) < 0) {
-			fprintf(f, "ioctl(SIOCGIFXQLEN) failed: %s\n", strerror(errno));
+			fprintf(f, "ioctl(SIOCGIFTXQLEN) failed: %s\n", strerror(errno));
 			close(s);
 			return;
 		}
@@ -461,12 +461,17 @@ int print_linkinfo(const struct sockaddr_nl *who,
 		}
 	}
 
+	if (do_link && tb[IFLA_PROMISCUITY] && show_details)
+		fprintf(fp, " promiscuity %u ",
+			*(int*)RTA_DATA(tb[IFLA_PROMISCUITY]));
+
 	if (do_link && tb[IFLA_LINKINFO] && show_details)
 		print_linktype(fp, tb[IFLA_LINKINFO]);
 
-	if (do_link && tb[IFLA_IFALIAS])
-		fprintf(fp,"\n    alias %s", 
+	if (do_link && tb[IFLA_IFALIAS]) {
+		fprintf(fp, "%s    alias %s", _SL_,
 			rta_getattr_str(tb[IFLA_IFALIAS]));
+	}
 
 	if (do_link && show_stats) {
 		if (tb[IFLA_STATS64])
@@ -695,8 +700,8 @@ int print_addrinfo(const struct sockaddr_nl *who, struct nlmsghdr *n,
 	return 0;
 }
 
-int print_addrinfo_primary(const struct sockaddr_nl *who, struct nlmsghdr *n,
-			   void *arg)
+static int print_addrinfo_primary(const struct sockaddr_nl *who,
+				  struct nlmsghdr *n, void *arg)
 {
 	struct ifaddrmsg *ifa = NLMSG_DATA(n);
 
@@ -706,8 +711,8 @@ int print_addrinfo_primary(const struct sockaddr_nl *who, struct nlmsghdr *n,
 	return print_addrinfo(who, n, arg);
 }
 
-int print_addrinfo_secondary(const struct sockaddr_nl *who, struct nlmsghdr *n,
-			     void *arg)
+static int print_addrinfo_secondary(const struct sockaddr_nl *who,
+				    struct nlmsghdr *n, void *arg)
 {
 	struct ifaddrmsg *ifa = NLMSG_DATA(n);
 
@@ -781,7 +786,7 @@ static int ipadd_save_prep(void)
 	int ret;
 
 	if (isatty(STDOUT_FILENO)) {
-		fprintf(stderr, "Not sending binary stream to stdout\n");
+		fprintf(stderr, "Not sending a binary stream to stdout\n");
 		return -1;
 	}
 
@@ -1419,4 +1424,3 @@ int do_ipaddr(int argc, char **argv)
 	fprintf(stderr, "Command \"%s\" is unknown, try \"ip addr help\".\n", *argv);
 	exit(-1);
 }
-
