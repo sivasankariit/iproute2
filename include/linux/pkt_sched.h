@@ -683,7 +683,11 @@ struct tc_qfq_cl_stats {
 			    */
 	__s64 inter_deq_time_ns ; /* Mean inter-dequeue time */
 	__s64 absdev_deq_time_ns; /* Average of all the absolute inter-dequeue differences from ideal */
-	__s64 expected_inter_dequeue_time_ns;
+	__s64 expected_inter_dequeue_time_ns; /* The expected
+					       * inter-dequeue
+					       * difference computed
+					       * from 1482 sized
+					       * packets */
 };
 
 struct tc_qfq_xstats {
